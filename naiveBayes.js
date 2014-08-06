@@ -74,16 +74,6 @@ AttributeStore.prototype.updateCounts = function(attribute) {
         currentLabel[attribute.value][attribute.class] = 1;
 };
 
-// AttributeStore.prototype.getTotal = function(value, label) {
-//     var sum = 0;
-//     var attributeByValue = this.attributeCounts[label][value];
-//     debugger
-//     for (var cls in attributeByValue)
-//         sum += attributeByValue[cls];
-
-//     return sum;
-// };
-
 AttributeStore.prototype.getTotalForClass = function(value, label, cls) {
     return this.attributeCounts[label][value][cls];
 };
@@ -97,79 +87,10 @@ var Attribute = function(value, label, cls, type) {
     this.type = type || "string" // string, number or boolean
 };
 
-
-// var getAttributesForLabel = function(data, label) {
-//     return data.filter(function(item) {
-//         return item.label == label;
-//     })
-// };
-
-// var getAttributeValueRange = function(data, label) {
-//     return getAttributesForLabel(data, label)
-//         .distinct(function(item) {
-//             return item.value;
-//         });
-// };
-
-// var getValueRange = function(data) {
-//     return data.distinct(function(item) {
-//         return item.value;
-//     }).map(function(item) {
-//         return item.value;
-//     });
-// };
-
-// var getAttributesByValue = function(data, value) {
-//     return data.filter(function(item) {
-//         return item.value == value;
-//     });
-// }
-
-// var getAttributeValueCounts = function(data, label) {
-//     var values = {};
-//     var attributeValues = getAttributesForLabel(data, label);
-
-//     attributeValues.forEach(function(attribute) {
-//         if (!values.hasOwnProperty(attribute.value))
-//             values[attribute.value] = {};
-
-//         if (values[attribute.value].hasOwnProperty(attribute.class))
-//             values[attribute.value][attribute.class]++;
-//         else
-//             values[attribute.value][attribute.class] = 1;
-
-//         if (values[attribute.value].hasOwnProperty("total"))
-//             values[attribute.value]["total"]++;
-//         else
-//             values[attribute.value]["total"] = 1;
-//     });
-
-//     values.total = attributeValues.length;
-
-//     return values;
-// };
-
-
-// var getAttributeValueCount = function(data, value) {
-//     return data.filter(function(item) {
-//         return item.value == value;
-//     }).length;
-// };
-
-
 var Bayes = function() {
     this.attributeCounts = {};
-    // this.attributes = [];
     this.classCounts = {};
     this.labels = [];
-    // this.classes = [];
-};
-Bayes.prototype.conditionalProbability = function() {
-
-};
-
-Bayes.prototype.probability = function() {
-
 };
 
 Bayes.prototype.train = function(data, newLabels, classIndex) {
@@ -229,43 +150,6 @@ Bayes.prototype.classify = function(row) {
     return probabilities.sort(function(a, b) {
         return b.probability - a.probability;
     })[0];
-
-    // var attributes = this.attributes;
-    // var labels = this.labels;
-
-    // var N = attributes.length;
-
-    // var attributeLabels = Object.keys(this.labels);
-
-    // attributeLabels.forEach(function(currentLabel) {
-    //     probabilities[currentLabel] = [];
-    //     var currentProbabilities = probabilities[currentLabel],
-    //         currentLabelAttributes = getAttributesForLabel(attributes, currentLabel),
-    //         currentAttributeValueRange = getValueRange(currentLabelAttributes);
-
-    //     var currentLabelTotalProbability = getAttributeValueCount(this.attributes, currentLabel) / N;
-    //     currentProbabilities.push(currentLabelTotalProbability);
-
-    //     var otherAttributeLabels = attributeLabels.filter(function(l) {
-    //         return l != currentLabel;
-    //     });
-
-    //     otherAttributeLabels.forEach(function(otherLabel) {
-    //         var otherAttributes = getAttributesForLabel(attributes, otherLabel);
-    //         getValueRange(otherAttributes).forEach(function(aValue) {
-    //             currentAttributeValueRange.forEach(function(cAttr) {
-    //                 var cAttrs = getAttributesByValue(currentLabelAttributes, cAttr);
-    //                 var aValueAttrs = get
-    //                 var currentLabelProbability = getAttributeValueCount(attributes.filter(function() {
-    //                     return
-    //                 }), )
-    //                 currentProbabilities.push()
-    //             });
-    //         })
-    //     });
-
-
-    // });
 }
 
 B = new Bayes();
