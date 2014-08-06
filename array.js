@@ -13,13 +13,3 @@ Array.prototype.distinct = function(transformFn) {
     }
     return distinctSet;
 };
-
-Object.prototype.mergeCounts = function(counts) {
-    var self = this;
-    Object.keys(counts).forEach(function(valueType) {
-        if (self.hasOwnProperty(valueType))
-            self[valueType] += counts[valueType];
-        else
-            self[valueType] = counts[valueType];
-    });
-};
