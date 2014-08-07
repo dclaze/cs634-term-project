@@ -1,20 +1,5 @@
 //Bayes Theorem
 //P(A|B) = P(B|A) * P(A) / P(B)
-
-LABELS = ["Assignment", "Project", "Exam", "Label"];
-DATA = [
-    ["Good", "A", "High", "Pass"],
-    ["Good", "B", "High", "Pass"],
-    ["Bad", "B", "Low", "Fail"],
-    ["Bad", "C", "High", "Fail"],
-    ["Good", "C", "Low", "Fail"],
-    ["Good", "C", "High", "Pass"],
-    ["Bad", "B", "High", "Pass"],
-    ["Good", "A", "Low", "Pass"],
-    ["Bad", "A", "Low", "Fail"],
-    ["Good", "B", "Low", "Pass"]
-];
-
 var ClassStore = function() {
     this.classes = [];
     this.classCounts = {};
@@ -36,10 +21,17 @@ ClassStore.prototype.updateCounts = function(value) {
 };
 
 ClassStore.prototype.getTotal = function() {
-    var sum = 0;
-    for (var key in this.classCounts)
-        sum += this.classCounts[key];
+    var sum = 0,
+        self = this;
+    Object.keys(self.classCounts).forEach(function(key) {
+        sum += self.classCounts[key];
+    });
+
     return sum;
+}
+
+ClassStore.prototype.clear = function() {
+    this.classCounts = [];
 }
 
 var classStore = new ClassStore();
@@ -48,6 +40,11 @@ var AttributeStore = function() {
     this.attributes = [];
     this.attributeCounts = {};
 };
+
+AttributeStore.prototype.clear = function() {
+    this.attributes = [];
+    this.attributeCounts = [];
+}
 
 AttributeStore.prototype.add = function(value, label, cls, type) {
     var newAttribute = new Attribute(value, label, cls, type);
@@ -94,6 +91,9 @@ var Bayes = function() {
 };
 
 Bayes.prototype.train = function(data, newLabels, classIndex) {
+    attributeStore.clear();
+    classStore.clear();
+
     var attributes = this.attibuteCounts,
         classes = this.classCounts;
     this.labels = newLabels;
@@ -104,8 +104,9 @@ Bayes.prototype.train = function(data, newLabels, classIndex) {
         for (var i = 0; i < row.length; i++) {
             if (i != classIndex)
                 attributeStore.add(row[i], newLabels[i], classValue);
-            else
+            else {
                 classStore.add(row[i], classValue);
+            }
         };
     });
 
@@ -126,7 +127,6 @@ Bayes.prototype.classify = function(row) {
 
             var classSum = classCounts[clsKey];
             var currentClassProbability = classSum / classStore.getTotal();
-            console.log(currentClassProbability);
 
             var attributeProbabilities = [];
             for (var i = 0; i < row.length; i++) {
@@ -134,7 +134,6 @@ Bayes.prototype.classify = function(row) {
                     label = labels[i],
                     attributeSumByClass = attributeStore.getTotalForClass(value, label, clsKey);
 
-                console.log(attributeSumByClass, "/", classSum)
                 if (classSum && attributeSumByClass)
                     attributeProbabilities.push(attributeSumByClass / classSum);
                 else
@@ -143,7 +142,7 @@ Bayes.prototype.classify = function(row) {
 
             newProbability.probability = currentClassProbability * attributeProbabilities.reduce(function(a, b) {
                 return a * b;
-            });
+            }, 0);
             probabilities.push(newProbability);
         });
 
